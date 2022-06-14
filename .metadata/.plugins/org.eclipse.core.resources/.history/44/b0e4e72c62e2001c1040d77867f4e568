@@ -1,0 +1,5 @@
+package com.hy.restapi.util;
+
+public class ApiUtil {
+
+}

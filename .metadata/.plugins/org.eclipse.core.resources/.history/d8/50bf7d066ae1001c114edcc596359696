@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hy.restapi.mapper.RestApiMapper">
+    <insert id="insertXmlData" parameterType="java.util.HashMap">
+        insert into INSPIEN_XMLDATA_INFO(
+            ORDER_NUM,
+            ITEM_SEQ,
+            ORDER_ID,
+            ORDER_DATE,
+            ORDER_PRICE,
+            ORDER_QTY,
+            RECEIVER_NAME,
+            RECEIVER_NO,
+            ETA_DATE,
+            DESTINATION,
+            DESCIPTION,
+            ITEM_NAME,
+            ITEM_QTY,
+            ITEM_COLOR,
+            ITEM_PRICE,
+            SENDER
+            
+        ) values (
+            #{ORDER_NUM},
+            #{ITEM_SEQ},
+            #{ORDER_ID},
+            #{ORDER_DATE},
+            #{ORDER_PRICE},
+            #{ORDER_QTY},
+            #{RECEIVER_NAME},
+            #{RECEIVER_NO},
+            #{ETA_DATE},
+            #{DESTINATION},
+            #{DESCIPTION},
+            #{ITEM_NAME},
+            #{ITEM_QTY},
+            #{ITEM_COLOR},
+            #{ITEM_PRICE},
+            #{SENDER}
+        )
+    </insert>
+    
+    <insert id="insertXmlData" parameterType="java.util.HashMap">
+    	insert into INSPIEN_XMLDATA_INFO(
+            ORDER_NUM,
+            ITEM_SEQ,
+            ORDER_ID,
+            ORDER_DATE,
+            ORDER_PRICE,
+            ORDER_QTY,
+            RECEIVER_NAME,
+            RECEIVER_NO,
+            ETA_DATE,
+            DESTINATION,
+            DESCIPTION,
+            ITEM_NAME,
+            ITEM_QTY,
+            ITEM_COLOR,
+            ITEM_PRICE,
+            SENDER
+        ) values (#{item.ORDER_NUM, jdbcType=VARCHAR},
+			#{item.ITEM_SEQ, jdbcType=VARCHAR},
+			#{item.ORDER_ID, jdbcType=VARCHAR},
+			#{item.ORDER_DATE, jdbcType=VARCHAR},
+			#{item.ORDER_PRICE, jdbcType=VARCHAR},
+			#{item.ORDER_QTY, jdbcType=VARCHAR},
+			#{item.RECEIVER_NAME, jdbcType=VARCHAR},
+			#{item.RECEIVER_NO, jdbcType=VARCHAR},
+			#{item.ETA_DATE, jdbcType=VARCHAR},
+			#{item.DESTINATION, jdbcType=VARCHAR},
+			#{item.DESCIPTION, jdbcType=VARCHAR},
+			#{item.ITEM_NAME, jdbcType=VARCHAR},
+			#{item.ITEM_QTY, jdbcType=VARCHAR},
+			#{item.ITEM_COLOR, jdbcType=VARCHAR},
+			#{item.ITEM_PRICE, jdbcType=VARCHAR},
+			#{item.SENDER, jdbcType=VARCHAR}
+		)
+    </insert>
+    
+</mapper>

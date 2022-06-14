@@ -1,0 +1,18 @@
+server:
+  port: 8080
+ 
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@211.106.171.36:11527:POS
+    username: inspien01
+    password: inspien01
+    
+mybatis:
+  type-aliases-package: com.hy.restapi
+  configuration:
+    map-underscore-to-camel-case: true
+    
+file:
+  storePath: '/home/centos/project"+fileName'
+  uploadPath: '211.106.171.36'

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hy.restapi.mapper.RestApiMapper">
+    <insert id="insertXmlData" parameterType="java.util.HashMap">
+        insert into INSPIEN_XMLDATA_INFO(
+            ORDER_NUM,
+            ITEM_SEQ,
+            ORDER_ID,
+            ORDER_DATE,
+            ORDER_PRICE,
+            ORDER_QTY,
+            RECEIVER_NAME,
+            RECEIVER_NO,
+            ETA_DATE,
+            DESTINATION,
+            DESCIPTION,
+            ITEM_NAME,
+            ITEM_QTY,
+            ITEM_COLOR,
+            ITEM_PRICE,
+            SENDER
+            
+        ) values (
+            #{ORDER_NUM, jdbcType=VARCHAR},
+			#{ITEM_SEQ, jdbcType=VARCHAR},
+			#{ORDER_ID, jdbcType=VARCHAR},
+			#{ORDER_DATE, jdbcType=VARCHAR},
+			#{ORDER_PRICE, jdbcType=VARCHAR},
+			#{ORDER_QTY, jdbcType=VARCHAR},
+			#{RECEIVER_NAME, jdbcType=VARCHAR},
+			#{RECEIVER_NO, jdbcType=VARCHAR},
+			#{ETA_DATE, jdbcType=VARCHAR},
+			#{DESTINATION, jdbcType=VARCHAR},
+			#{DESCIPTION, jdbcType=VARCHAR},
+			#{ITEM_NAME, jdbcType=VARCHAR},
+			#{ITEM_QTY, jdbcType=VARCHAR},
+			#{ITEM_COLOR, jdbcType=VARCHAR},
+			#{ITEM_PRICE, jdbcType=VARCHAR},
+			#{SENDER, jdbcType=VARCHAR}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,18 @@
+package com.hy.restapi.model;
+
+@data
+public class Headerdata {
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+	private String 
+}

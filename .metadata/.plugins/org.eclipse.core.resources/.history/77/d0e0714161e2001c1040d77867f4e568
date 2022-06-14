@@ -1,0 +1,10 @@
+package com.hy.restapi.properties;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@Getter
+@Setter
+@ConfigurationProperties(prefix = "requestParam")
+public class RequestParam {
+
+}

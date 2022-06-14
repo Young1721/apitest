@@ -1,0 +1,36 @@
+package com.hy.restapi.service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hy.restapi.mapper.RestApiMapper;
+import com.hy.restapi.model.Dbxmldata;
+
+
+@Service
+public class RestApiService {
+	@Autowired
+	private RestApiMapper restapimapper;
+	
+	public void insertrestapidata(Dbxmldata Dbdata) {
+		
+		for(int i =0; i < Dbdata.getHEADER().size(); i++)
+		{
+			for(int j =0; j < Dbdata.getDETAIL().size(); j ++) {
+				if(Dbdata.getDETAIL().get(j).getORDER_NUM().equals(Dbdata.getHEADER().get(i).getORDER_NUM())) {
+					List<Dbxmldata> joined = new ArrayList<>();
+					joined.addAll(Dbdata.getDETAIL().get(j));
+					joined.addAll(Dbdata.getHEADER().get(i));
+					System.out.println(joined);
+				}
+			}
+			
+		}
+        //restapimapper.insertdbconninfo(Dbdata);
+    }
+	
+}

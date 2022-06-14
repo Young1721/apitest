@@ -1,0 +1,23 @@
+package com.hy.restapi.model;
+
+import lombok.Data;
+
+@Data
+public class MergeData {
+
+	private String RECEIVER_NO;
+	private String ORDER_NUM;
+	private String ORDER_QTY;
+	private String ORDER_ID;
+	private String ORDER_DATE;
+	private String DESTINATION;
+	private String RECEIVER_NAME;
+	private String ORDER_PRICE;
+	private String ETA_DATE;
+	private String DESCIPTION;
+	private String ITEM_QTY;
+	private String ITEM_SEQ;
+	private String ITEM_PRICE;
+	private String ITEM_NAME;
+	private String ITEM_COLOR;
+}

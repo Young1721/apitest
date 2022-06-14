@@ -1,0 +1,8 @@
+package com.hy.restapi.model;
+
+import lombok.Data;
+
+@Data
+public class DocunmentOrder {
+	private Dbxmldata PurchaseOrder;
+}

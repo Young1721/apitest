@@ -1,0 +1,10 @@
+package com.hy.restapi.model;
+
+import lombok.Data;
+
+@Data
+public class Dbxmldata {
+	private Headerdata HEADER;
+	//private Detaildata DETAIL;
+	
+}

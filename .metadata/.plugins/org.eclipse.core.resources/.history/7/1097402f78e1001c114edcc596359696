@@ -1,0 +1,14 @@
+package com.hy.restapi.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.hy.restapi.model.Detaildata;
+import com.hy.restapi.model.Headerdata;
+
+@Mapper
+public interface RestApiMapper {
+	void insertXmlData(Map<String, String> finalMap);
+}

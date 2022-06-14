@@ -1,0 +1,242 @@
+package com.hy.restapi.controller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.hy.restapi.model.ApiDocument;
+import com.hy.restapi.properties.FileProperty;
+import com.hy.restapi.service.RestApiService;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+@RestController	
+@Controller
+@RequestMapping(value="/v1")
+@Slf4j
+public class ApiContorller {
+	
+	@Autowired
+	private RestApiService restapiService;
+	
+	@Autowired
+	private FileProperty fileProperty;
+	
+	/**
+	 * headers parameter
+	 * @param params
+	 * @return
+	 */
+	public HttpEntity<?> apiClientHttpEntity(String params) {
+		HttpHeaders reqHeaders = new HttpHeaders();
+		reqHeaders.set("Content-type", "application/json");
+		reqHeaders.set("Accept", "application/json");
+		
+		return new HttpEntity<Object> (params, reqHeaders);
+	}
+	
+    @RequestMapping(value = "/apiCall")
+	public ResponseEntity<String> apiCall(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		JSONObject param = new JSONObject();
+		param.put("NAME", "정한영");
+		param.put("PHONE_NUMBER", "01023261721");
+		param.put("E_MAIL", "gksdud1721@gmail.com");
+		HttpEntity<?> requestEntity = apiClientHttpEntity(param.toString());
+	     
+		RestTemplate restTemplate = new RestTemplate();
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        restTemplate.getMessageConverters().add(converter);
+		
+		ResponseEntity<String> responseEntity = restTemplate.exchange("http://211.106.171.36:50000/RESTAdapter/RecruitingTest", HttpMethod.POST, requestEntity, String.class);
+		Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).create();
+		ApiDocument apidocument = gson.fromJson(responseEntity.getBody(), ApiDocument.class);
+		
+		
+		
+//		String fileName = apidocument.getJSON_DATA();
+		
+		// xml byte to data
+		byte[] xmlByte = apidocument.getXML_DATA().getBytes("EUC-KR");
+		String xmlData = new String(Base64.getDecoder().decode(xmlByte), "EUC-KR");
+		
+		// json byte to data
+		byte[] jsonByte = apidocument.getJSON_DATA().getBytes("UTF-8");
+		String jsonData = new String(Base64.getDecoder().decode(jsonByte), "UTF-8");
+		
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
+		
+		Document doc = convertStringToXMLDocument(xmlData);
+		
+		
+		Map<String, List<Map<String, String>>> resultMap = parseXML(doc.getDocumentElement());
+		restapiService.insertXmlData(resultMap);
+		String fileName = "INSPIEN_JSON_정한영_" + System.currentTimeMillis() + fileProperty.getFileExt();
+		
+		
+		  File file = new File(fileProperty.getStorePath()+fileName); 
+		  FileWriter fw = new FileWriter(file, false); 
+		  fw.write(jsonData); fw.flush();
+		  
+		  FTPClient ftpClient = setFTPUploader(fileProperty.getUploadIp(), fileProperty.getUploadUsername(),fileProperty.getUploadPassword());
+		  uploadFile(ftpClient, "/home/centos/project", fileName, "/", file); 
+		  disconnect(ftpClient);
+		 
+		
+	    return ResponseEntity.ok(responseEntity.getBody());
+    }
+    
+    private static Document convertStringToXMLDocument(String xmlString)  {
+	  //Parser that produces DOM object trees from XML content
+	  DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	  
+	  //API to obtain DOM Document instance
+	  DocumentBuilder builder = null;
+	  try {
+		  
+		 builder = factory.newDocumentBuilder();
+		 Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+		 
+	     return doc;
+	  }  catch (Exception e)  {
+		  
+	     e.printStackTrace();
+	     
+	  }
+	  
+	  return null;
+    }
+    
+    private static Map<String, List<Map<String, String>>> parseXML(Node node) {
+    	Map<String, List<Map<String, String>>> resultMap = new HashMap<String, List<Map<String, String>>>();
+    	List<Map<String, String>> headerList = new ArrayList<Map<String, String>>();
+  	  	List<Map<String, String>> detailList = new ArrayList<Map<String, String>>();
+        System.out.println(node.getNodeName());
+
+        NodeList nodeList = node.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node currentNode = nodeList.item(i);
+            
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+            	if(currentNode.getNodeName().equals("PurchaseOrder")) {
+            		continue;
+            	} else if(currentNode.getNodeName().equals("HEADER")) {
+            		Map<String, String> headerMap = new HashMap<String, String>();
+            		NodeList childNodeList = currentNode.getChildNodes();
+            		
+            		for(int j = 0; j < childNodeList.getLength(); j++) {
+            			Node childNode = childNodeList.item(j);
+            			
+            			try {
+            				headerMap.put(childNode.getNodeName(), childNode.getChildNodes().item(0).getNodeValue());
+            			} catch(Exception e) {
+            				headerMap.put(childNode.getNodeName(), null);
+            			}
+            			
+            		}
+            		
+            		headerList.add(headerMap);
+            	}
+            	
+            	else if(currentNode.getNodeName().equals("DETAIL")) {
+            		Map<String, String> detailMap = new HashMap<String, String>();
+            		NodeList childNodeList = currentNode.getChildNodes();
+            		
+            		for(int j = 0; j < childNodeList.getLength(); j++) {
+            			Node childNode = childNodeList.item(j);
+            			
+            			try {
+            				detailMap.put(childNode.getNodeName(), childNode.getChildNodes().item(0).getNodeValue());
+            			} catch(Exception e) {
+            				detailMap.put(childNode.getNodeName(), null);
+            			}
+            		}
+            		
+            		detailList.add(detailMap);
+            	}
+            }
+        }
+        
+        resultMap.put("headerList", headerList);
+        resultMap.put("detailList", detailList);
+        
+        return resultMap;
+    }
+    
+    private FTPClient setFTPUploader(String host, String user, String pwd) throws Exception {
+    	FTPClient ftpClient = new FTPClient();
+		//log.debug("싱글톤으로 박을 수 없나.");
+		ftpClient = new FTPClient();
+		ftpClient.setDefaultPort(20421);
+		ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+		int reply;
+		ftpClient.connect(host);// 호스트 연결
+		reply = ftpClient.getReplyCode();
+		if (!FTPReply.isPositiveCompletion(reply)) {
+			ftpClient.disconnect();
+			throw new Exception("Exception in connecting to FTP Server");
+		}
+		ftpClient.login(user, pwd);// 로그인
+		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+		ftpClient.enterLocalPassiveMode();
+		
+		return ftpClient;
+	}
+    
+    private void uploadFile(FTPClient ftpClient, String localFileFullName, String fileName, String hostDir, File file) throws Exception {
+		try (InputStream input = new FileInputStream(file)) {
+			ftpClient.storeFile(hostDir + fileName, input);
+			// storeFile() 메소드가 전송하는 메소드
+		}
+	}
+    
+    private void disconnect(FTPClient ftpClient) {
+		if (ftpClient.isConnected()) {
+			try {
+				ftpClient.logout();
+				ftpClient.disconnect();
+			} catch (IOException f) {
+				f.printStackTrace();
+			}
+		}
+	}
+
+}

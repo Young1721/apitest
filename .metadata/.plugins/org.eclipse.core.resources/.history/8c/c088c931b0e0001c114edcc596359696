@@ -1,0 +1,6 @@
+package com.hy.restapi.model;
+
+@Data
+public class DocunmentOrder {
+
+}

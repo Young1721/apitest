@@ -1,0 +1,19 @@
+package com.hy.restapi.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hy.restapi.mapper.RestApiMapper;
+import com.hy.restapi.model.DocunmentOrder;
+
+
+@Service
+public class RestApiService {
+	@Autowired
+	private RestApiMapper restapimapper;
+	
+	public void insertrestapidata(DocunmentOrder order) {
+        restapimapper.insertdbconninfo(dbconninfo);
+    }
+	
+}

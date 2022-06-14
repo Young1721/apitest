@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hy.restapi.mapper.RestApiMapper">
+    <insert id="insertdbconninfo" parameterType="com.hy.restapi.model.MergeData">
+        insert into INSPIEN_XMLDATA_INFO(
+            ORDER_NUM,
+            ITEM_SEQ,
+            ORDER_ID,
+            ORDER_DATE,
+            ORDER_PRICE,
+            ORDER_QTY,
+            RECEIVER_NAME,
+            RECEIVER_NO,
+            ETA_DATE,
+            DESTINATION,
+            DESCIPTION,
+            ITEM_NAME,
+            ITEM_QTY,
+            ITEM_COLOR,
+            ITEM_PRICE,
+            SENDER
+            
+        ) values (
+            #{ORDER_NUM},
+            #{ITEM_SEQ},
+            #{ORDER_ID},
+            #{ORDER_DATE},
+            #{ORDER_PRICE},
+            #{ORDER_QTY},
+            #{RECEIVER_NAME},
+            #{RECEIVER_NO},
+            #{ETA_DATE},
+            #{DESTINATION},
+            #{DESCIPTION},
+            #{ITEM_NAME},
+            #{ITEM_QTY},
+            #{ITEM_COLOR},
+            #{ITEM_PRICE},
+            #{SENDER}
+        )
+    </insert>
+    
+    <insert id="insertXmlData" parameterType="java.util.HashMap">
+    insert into INSPIEN_XMLDATA_INFO(
+            ORDER_NUM,
+            ITEM_SEQ,
+            ORDER_ID,
+            ORDER_DATE,
+            ORDER_PRICE,
+            ORDER_QTY,
+            RECEIVER_NAME,
+            RECEIVER_NO,
+            ETA_DATE,
+            DESTINATION,
+            DESCIPTION,
+            ITEM_NAME,
+            ITEM_QTY,
+            ITEM_COLOR,
+            ITEM_PRICE,
+            SENDER
+            
+        ) values
+       	<foreach item="item" index="index" collection="resultList"  open="(" separator="," close=")">
+ 			#{item.ORDER_NUM},
+			#{item.ITEM_SEQ},
+			#{item.ORDER_ID},
+			#{item.ORDER_DATE},
+			#{item.ORDER_PRICE},
+			#{item.ORDER_QTY},
+			#{item.RECEIVER_NAME},
+			#{item.RECEIVER_NO},
+			#{item.ETA_DATE},
+			#{item.DESTINATION},
+			#{item.DESCIPTION},
+			#{item.ITEM_NAME},
+			#{item.ITEM_QTY},
+			#{item.ITEM_COLOR},
+			#{item.ITEM_PRICE},
+			#{item.SENDER}
+		</foreach>
+    </insert>
+    
+</mapper>

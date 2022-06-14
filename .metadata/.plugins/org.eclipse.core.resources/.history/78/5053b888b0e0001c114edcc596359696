@@ -1,0 +1,12 @@
+package com.hy.restapi.model;
+
+import java.util.ArrayList;
+
+import lombok.Data;
+
+@Data
+public class Dbxmldata {
+	private List<Headerdata> HEADER;
+	private List<Detaildata> DETAIL;
+	
+}

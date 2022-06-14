@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.springframework.http.HttpHeaders"/>
+    <fullyQualifiedTypeName name="java.nio.charset.Charset"/>
+    <fullyQualifiedTypeName name="org.springframework.boot.jackson.JsonObjectDeserializer"/>
+    <fullyQualifiedTypeName name="com.hy.restapi.model.Document"/>
+    <fullyQualifiedTypeName name="com.hy.restapi.model.DbConnInfo.ResponseData"/>
+    <fullyQualifiedTypeName name="com.hy.restapi.model.DbConnInfo"/>
+    <fullyQualifiedTypeName name="lombok.Getter"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="java.nio.charset.StandardCharsets"/>
+    <fullyQualifiedTypeName name="java.util.Base64"/>
+    <fullyQualifiedTypeName name="org.json.JSONObject"/>
+    <fullyQualifiedTypeName name="com.hy.restapi.model.Dbxmldata"/>
+    <fullyQualifiedTypeName name="javax.swing.text.Document"/>
+    <fullyQualifiedTypeName name="org.w3c.dom.Document"/>
+    <fullyQualifiedTypeName name="org.w3c.dom.Node"/>
+    <fullyQualifiedTypeName name="java.io.PrintWriter"/>
+    <fullyQualifiedTypeName name="org.apache.commons.net.PrintCommandListener"/>
+    <fullyQualifiedTypeName name="org.apache.commons.net.ftp.FTPReply"/>
+    <fullyQualifiedTypeName name="org.apache.commons.net.ftp.FTP"/>
+    <fullyQualifiedTypeName name="java.io.File"/>
+    <fullyQualifiedTypeName name="java.io.FileWriter"/>
+    <fullyQualifiedTypeName name="com.hy.restapi.properties.ApiUrlProperty"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,129 @@
+package com.hy.restapi.controller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.hy.restapi.model.ApiDocument;
+import com.hy.restapi.properties.ApiUrlProperty;
+import com.hy.restapi.properties.FileProperty;
+import com.hy.restapi.properties.RequestParamProperty;
+import com.hy.restapi.service.RestApiService;
+import com.hy.restapi.util.ApiUtil;
+
+import lombok.extern.slf4j.Slf4j;
+
+
+@RestController	
+@Controller
+@RequestMapping(value="/v1")
+@Slf4j
+public class ApiContorller {
+	
+	@Autowired
+	private RestApiService restapiService;
+	
+	@Autowired
+	private FileProperty fileProperty;
+	
+	@Autowired
+	private RequestParamProperty requestParamProperty;
+	
+	@Autowired
+	private ApiUrlProperty apiUrlProperty;
+	
+	@Autowired
+	private ApiUtil apiUtil;
+	
+	/**
+	 * headers parameter
+	 * @param params
+	 * @return
+	 */
+	public HttpEntity<?> apiClientHttpEntity(String params) {
+		HttpHeaders reqHeaders = new HttpHeaders();
+		reqHeaders.set("Content-type", "application/json");
+		reqHeaders.set("Accept", "application/json");
+		
+		return new HttpEntity<Object> (params, reqHeaders);
+	}
+	
+    @RequestMapping(value = "/apiCall")
+	public ResponseEntity<String> apiCall(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		ApiDocument apidocument = apiUtil.getApiDocument(requestParamProperty.getName(), requestParamProperty.getPhoneNumber(), requestParamProperty.getEmail(), apiUrlProperty.getUrl());
+		
+		
+		
+//		String fileName = apidocument.getJSON_DATA();
+		
+		// xml byte to data
+		byte[] xmlByte = apidocument.getXML_DATA().getBytes("EUC-KR");
+		String xmlData = new String(Base64.getDecoder().decode(xmlByte), "EUC-KR");
+		
+		// json byte to data
+		byte[] jsonByte = apidocument.getJSON_DATA().getBytes("UTF-8");
+		String jsonData = new String(Base64.getDecoder().decode(jsonByte), "UTF-8");
+		
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
+		
+		Document doc = apiUtil.convertStringToXMLDocument(xmlData);
+		
+		
+		Map<String, List<Map<String, String>>> resultMap = apiUtil.parseXML(doc.getDocumentElement());
+		restapiService.insertXmlData(resultMap);
+		String fileName = fileProperty.getFileName() + System.currentTimeMillis() + fileProperty.getFileExt();
+		
+		
+		  File file = new File(fileProperty.getStorePath()+fileName); 
+		  FileWriter fw = new FileWriter(file, false); 
+		  fw.write(jsonData); fw.flush();
+		  
+		  FTPClient ftpClient = apiUtil.setFTPUploader(fileProperty.getUploadIp(), fileProperty.getUploadUsername(),fileProperty.getUploadPassword());
+		  apiUtil.uploadFile(ftpClient, fileProperty.getStorePath(), fileName, "/", file); 
+		  apiUtil.disconnect(ftpClient);
+		 
+		
+	    return ResponseEntity.ok();
+    }
+    
+    
+
+}

@@ -1,0 +1,14 @@
+server:
+  port: 8080
+ 
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@oracle.ctcb7taor7hs.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+    username: admin
+    password: 12341234
+    
+mybatis:
+  type-aliases-package: com.hy.restapi
+  configuration:
+    map-underscore-to-camel-case: true

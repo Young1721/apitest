@@ -1,0 +1,61 @@
+package com.hy.restapi.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hy.restapi.mapper.RestApiMapper;
+import com.hy.restapi.model.Dbxmldata;
+
+
+@Service
+public class RestApiService {
+	@Autowired
+	private RestApiMapper restapiMapper;
+	
+	public void insertrestapidata(Dbxmldata Dbdata) {
+		
+		/*
+		 * for(int i =0; i < Dbdata.getHEADER().size(); i++) { for(int j =0; j <
+		 * Dbdata.getDETAIL().size(); j ++) {
+		 * if(Dbdata.getDETAIL().get(j).getORDER_NUM().equals(Dbdata.getHEADER().get(i).
+		 * getORDER_NUM())) {
+		 * //restapimapper.insertdbconninfo(Dbdata.getDETAIL().get(j),
+		 * Dbdata.getHEADER().get(i)); System.out.println(Dbdata.getDETAIL().get(j));
+		 * System.out.println(Dbdata.getHEADER().get(i)); } }
+		 * 
+		 * }
+		 */
+        //restapimapper.insertdbconninfo(Dbdata);
+    }
+	
+	public void insertXmlData(Map<String, List<Map<String, String>>> resultMap) {
+		List<Map<String, String>> headerList = resultMap.get("headerList");
+  	  	List<Map<String, String>> detailList = resultMap.get("detailList");
+  	  	List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
+  	  	Map<String, List<Map<String, String>>> finalMap = new HashMap<String, List<Map<String, String>>>();
+  	  	
+  	  	for(int i = 0; i < headerList.size(); i++) {
+  	  		Map<String, String> headerMap = headerList.get(i);
+  	  		for(int j = 0; j < detailList.size(); j++) {
+  	  			Map<String, String> detailMap = detailList.get(j);
+  	  			if(headerMap.get("ORDER_NUM").equals(detailMap.get(detailMap.get("ORDER_NUM")))) {
+	  	  			headerMap.put("ITEM_SEQ", detailMap.get("ITEM_SEQ"));
+		  	  		headerMap.put("ITEM_NAME", detailMap.get("ITEM_NAME"));
+		  	  		headerMap.put("ITEM_QTY", detailMap.get("ITEM_QTY"));
+		  	  		headerMap.put("ITEM_COLOR", detailMap.get("ITEM_COLOR"));
+		  	  		headerMap.put("ITEM_PRICE", detailMap.get("ITEM_PRICE"));
+		  	  		break;
+  	  			}
+  	  		}
+  	  		resultList.add(headerMap);
+  	  	}
+  	  	
+  	  	restapiMapper.insertXmlData(resultList);
+	}
+	
+}

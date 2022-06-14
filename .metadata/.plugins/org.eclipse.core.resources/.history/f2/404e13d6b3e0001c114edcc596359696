@@ -1,0 +1,10 @@
+package com.hy.restapi.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.hy.restapi.model.DocunmentOrder;
+
+@Mapper
+public interface RestApiMapper {
+	void insertdbconninfo(DocunmentOrder dbconninfo);
+}
